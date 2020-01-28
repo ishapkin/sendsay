@@ -1064,14 +1064,14 @@ class Sendsay
 	 *
 	 * @return array
 	 */
-	public function issue_send($group, $from, $sender='', $subject='', $text='', $sendwhen='now', $laterTime = null, $email = null, $users_list=NULL, $relink=array(), $format='html', $attache = array())
+	public function issue_send($group, $from, $sender='', $subject='', $text='', $sendwhen='now', $laterTime = null, $email = null, $users_list=NULL, $relink=array(), $format='html', $attache = array(), $draft = null)
 	{
 
 		$params = array(
 			'action'       => 'issue.send',
 			'group'        => $group,
 			'letter' => array(
-				'draft.id'   => is_numeric($from) ? $from : NULL,
+				'draft.id'   => $draft ? $draft : NULL,
 				'from.email' => $from,
 				'from.name'  => $sender,
 				'subject'    => $subject,
@@ -1991,5 +1991,3 @@ function Sendsay($login, $sublogin, $password, $debug=FALSE)
 {
 	return new Sendsay($login, $sublogin, $password, $debug);
 }
-
-
