@@ -1064,24 +1064,24 @@ class Sendsay
 	 *
 	 * @return array
 	 */
-	public function issue_send($group, $from, $sender='', $subject='', $text='', $sendwhen='now', $laterTime = null, $email = null, $users_list=NULL, $relink=array(), $format='html',$attaches = array())
+	public function issue_send($group, $from, $sender='', $subject='', $text='', $sendwhen='now', $laterTime = null, $email = null, $users_list=NULL, $relink=array(), $format='html', $attache = array(), $draft = null)
 	{
 
 		$params = array(
 			'action'       => 'issue.send',
 			'group'        => $group,
 			'letter' => array(
-				'draft.id'   => is_numeric($from) ? $from : NULL,
+				'draft.id'   => $draft ? $draft : NULL,
 				'from.email' => $from,
 				'from.name'  => $sender,
 				'subject'    => $subject,
-				'message'    => array($format => $text)
+				'message'    => array($format => $text),
+                'attaches'   => $attache
 			),
 			'sendwhen'     => $sendwhen,
 			'relink'       => is_null($relink) ? 0 : 1,
 			'relink.param' => is_null($relink) ? array() : array_merge(array('link' => 1, 'image' => 0, 'test' => 1), $relink),
-            'email'        => $email,
-            'attaches' => $attaches
+            'email'        => $email
 		);
 
 		if($sendwhen == 'later') {
@@ -1944,13 +1944,13 @@ class Sendsay
 	{
 		if ($this->debug)
 		{
-			echo '<pre>Запрос:'."\n".$this->json_dump(print_r(json_encode($this->params, JSON_UNESCAPED_UNICODE), TRUE))."\n";
+			echo '<pre>Запрос:'."\n".$this->json_dump(print_r(json_encode($this->params, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES), TRUE))."\n";
 		}
 
 		$curl = curl_init('https://api.sendsay.ru/'.$redirect.'?apiversion=100&json=1');
 
 		curl_setopt($curl, CURLOPT_POST, TRUE);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, 'request='.urlencode(json_encode($this->params, JSON_UNESCAPED_UNICODE)));
+		curl_setopt($curl, CURLOPT_POSTFIELDS, 'request='.urlencode(json_encode($this->params, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
 
 		$result = curl_exec($curl);
